@@ -1,12 +1,18 @@
-import React from 'react'
+// pages/Team.jsx
+import TeamMember from '../components/TeamMembers';
+import MemberDetails from '../components/MemberDetails';
 
-const Team = () => {
+function Team() {
   return (
-    <>
-    <h1 className="bg-blue-300 text-5xl font-semibold text-center p-4">Team Members</h1>
-   
-    </>
-  )
+    <div className="p-4">
+      <h1 className="text-2xl font-bold mb-4">Our Team</h1>
+      <TeamMember />
+      <MemberDetails />
+    </div>
+  );
 }
 
-export default Team
+export default Team;
+
+
+

@@ -3,8 +3,10 @@ import { Routes, Route } from 'react-router-dom';
 import Layout from '../layouts/Layout';
 import ProjectLayout from '../layouts/ProjectLayout';
 import Login from '../pages/Login';
+
 import Loader from '../components/Loader';
 import Profile from '../pages/Profile';
+
 
 // Lazy Loading Pages
 const Dashboard = lazy(() => import('../pages/Dashboard'));
@@ -15,6 +17,7 @@ const ProjectDetails = lazy(() => import('../pages/ProjectDetails'));
 
 function AppRoutes() {
   return (
+
     <Suspense fallback={<Loader />}>
       <Routes>
 
@@ -37,6 +40,7 @@ function AppRoutes() {
 
       </Routes>
     </Suspense>
+
   );
 }
 

@@ -1,0 +1,179 @@
+
+  .auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: #ffffff;
+  }
+  
+  .auth-card {
+    width: 100%;
+    max-width: 900px;
+    height: 520px;
+    position: relative;
+    perspective: 1500px;
+  }
+  
+  .card-face {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    display: flex;
+    border-radius: 16px;
+    backface-visibility: hidden;
+    transition: transform 0.6s ease-in-out;
+  }
+  
+  .front {
+    transform: rotateY(0deg);
+    z-index: 2;
+  }
+  
+  .back {
+    transform: rotateY(180deg);
+    z-index: 1;
+  }
+  
+  .auth-card.flipped .front {
+    transform: rotateY(180deg);
+    z-index: 1;
+  }
+  
+  .auth-card.flipped .back {
+    transform: rotateY(360deg);
+    z-index: 2;
+  }
+  
+  
+  .card-face {
+    flex-direction: row;
+  }
+  
+  .image-panel {
+    flex: 1;
+    background: url('./pic.jpg') center/cover no-repeat;
+  }
+  
+  .form-panel {
+    flex: 1;
+    padding: 2rem;
+    min-width: 300px;
+  }
+  
+  /* Responsive tweaks */
+  @media (max-width: 768px) {
+    .card-face {
+      flex-direction: column;
+    }
+  
+    .image-panel {
+      height: 200px;
+    }
+  
+    .form-panel {
+      padding: 1.5rem;
+    }
+  
+    .name-row {
+      flex-direction: column;
+    }
+  }
+  
+  
+  .form-panel {
+    flex: 1;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+  
+  h2 span {
+    color: #476e75;
+  }
+  
+  .tab {
+    margin-bottom: 20px;
+  }
+  
+  .tab span {
+    margin-right: 20px;
+    font-weight: 600;
+    color: gray;
+    cursor: pointer;
+  }
+  
+  .tab .active {
+    color: #2f4f50;
+    border-bottom: 2px solid #2f4f50;
+  }
+  
+  input[type="text"],
+  input[type="email"],
+  input[type="password"] {
+    width: 100%;
+    margin-bottom: 16px;
+    padding: 10px 12px;
+    font-size: 14px;
+    border: none;
+    border-bottom: 1px solid #ccc;
+    outline: none;
+  }
+  
+  .password-input {
+    position: relative;
+  }
+  
+  .password-input input {
+    width: 100%;
+    padding-right: 35px;
+  }
+  
+  .password-input span {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+  }
+  
+  .options-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+  
+  .options-row input {
+    margin-right: 6px;
+  }
+  
+  .submit-btn {
+    padding: 12px;
+    background-color: #4a6a71;
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  
+  .name-row {
+    display: flex;
+    gap: 16px;
+  }
+  
+  .auth-card {
+    width: 100%;
+    max-width: 900px;
+    height: 520px;
+    position: relative;
+    perspective: 1500px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);  }
+   
+  
