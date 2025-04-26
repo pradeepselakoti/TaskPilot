@@ -1,7 +1,12 @@
-const Login = () => {
+// pages/Login.jsx
+import AuthCard from '../components/AuthCard';
+
+function Login() {
   return (
-    <div className="text-3xl font-bold text-blue-500 text-center mt-11">Login page </div>
-  )
+    <div className="flex justify-center items-center min-h-screen">
+      <AuthCard />
+    </div>
+  );
 }
 
-export default Login
+export default Login;
