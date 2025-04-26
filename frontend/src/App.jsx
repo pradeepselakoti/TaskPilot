@@ -10,12 +10,15 @@ function App() {
 import { BrowserRouter } from "react-router-dom";
 import AppRoutes from "./routes/AppRoutes";
 import Chatbot from "./Components/Chatbot";
+import Dashboard from "./Components/Dashboard"
+
 
 function App() {
   return (
     <>
       <BrowserRouter>
-        <AppRoutes />
+        {/* <AppRoutes /> */}
+        <Dashboard/>
       </BrowserRouter>
 
      
