@@ -1,6 +1,6 @@
 // pages/Team.jsx
-import TeamMember from '../components/TeamMembers';
-import MemberDetails from '../components/MemberDetails';
+import TeamMember from '../Components/TeamMembers';
+import MemberDetails from '../Components/MemberDetails';
 
 function Team() {
   return (
