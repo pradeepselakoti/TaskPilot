@@ -1,0 +1,53 @@
+### Create Project Assignment
+POST http://localhost:5000/tl/assignments
+Content-Type: application/json
+
+{
+  "project_id": "65f8a24dbc15e8ef56b1d722",
+  "cos_id": ["65f8a24dbc15e8ef56b1d723"],
+  "tl_ids": ["65f8a24dbc15e8ef56b1d724"],
+  "intern_id": ["65f8a24dbc15e8ef56b1d725", "65f8a24dbc15e8ef56b1d726"],
+  "accepted": false
+}
+
+### Get All Project Assignments
+GET http://localhost:5000/tl/assignments
+
+### Get Project Assignment by ID
+GET http://localhost:5000/tl/assignments/65f8a24dbc15e8ef56b1d727
+
+### Update Project Assignment
+PUT http://localhost:5000/tl/assignments/65f8a24dbc15e8ef56b1d727
+Content-Type: application/json
+
+{
+  "project_id": "65f8a24dbc15e8ef56b1d722",
+  "cos_id": ["65f8a24dbc15e8ef56b1d723"],
+  "tl_ids": ["65f8a24dbc15e8ef56b1d724", "65f8a24dbc15e8ef56b1d728"],
+  "intern_id": ["65f8a24dbc15e8ef56b1d725"],
+  "accepted": true
+}
+
+### Delete Project Assignment
+DELETE http://localhost:5000/tl/assignments/65f8a24dbc15e8ef56b1d727
+
+### Create TL User
+POST http://localhost:5000/user/register
+Content-Type: application/json
+
+{
+  "first_name": "kartikey",
+  "last_Name": "joshi",
+  "email": "tl@example.com",
+  "password": "password123",
+  "role": "tl"
+}
+
+### login
+POST http://localhost:5000/user/login
+Content-Type: application/json
+
+{
+  "email": "tl@example.com",
+  "password": "password123"
+}
