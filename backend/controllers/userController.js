@@ -59,11 +59,19 @@ export const getUserProfile = async (req, res) => {
 
 export const updateUser = async (req, res) => {
   try {
-    const { first_name, last_name, email} = req.body;
-    
+    const updateFields = {};
+    const possibleFields = ['first_name', 'last_name', 'email', 'profile_pic', 'phone', 
+      'timezone', 'github_id', 'department', 'location', 'tech_stack', 'destination', 'temp_role'];
+
+    possibleFields.forEach(field => {
+      if (req.body[field] !== undefined) {
+        updateFields[field] = req.body[field];
+      }
+    });
+
     const user = await User.findByIdAndUpdate(
       req.user.id,
-      { first_name, last_name, email},
+      updateFields,
       { new: true }
     ).select('-password_hash');
 
