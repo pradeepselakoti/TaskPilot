@@ -1,51 +1,172 @@
-## 🚀 Getting Started
 
-### Prerequisites
-- Node.js & npm
-- MongoDB Atlas account
-- VS Code (recommended) + REST Client extension (for testing)
+# Task Pilot API Collection
 
----
+This Postman collection provides access to the Task Pilot backend API, including user authentication, role request management, project tracking, and task management features.
 
-## 📦 Installation
-
-```bash
-git clone https://github.com/yourusername/blacro-backend.git
-cd blacro-backend
-npm install
+## Base URL
+```
+http://localhost:5000/api/v1
 ```
 
-## Environmentvariables
+---
 
--PORT=5000
-JWT_SECRET=your_jwt_secret_key
-FrontendURI=http://localhost:5173
-MONGO_URI="mongodb+srv://usename:password@cluster0.co4usrj.mongodb.net/taskpilotDB?....."
+## 🔐 Authentication
+
+### Register
+- **Endpoint**: `POST /auth/register`
+- **Body** (JSON):
+```json
+{
+  "first_name": "Nikhil",
+  "last_name": "kiran",
+  "email": "magen@sample.com",
+  "password": "wfrerve",
+  "role": "pending"
+}
+```
+
+### Login
+- **Endpoint**: `POST /auth/login`
+- **Body** (JSON):
+```json
+{
+  "email": "sample",
+  "password": "wfrerve"
+}
+```
 
 ---
 
-## Testing API Endpoints with .rest file
+## 👤 User
 
--Install the REST Client extension in VS Code.
+### Get User Profile
+- **Endpoint**: `GET /user/me`
 
--Create a file named auth.rest and add the following:
-### Register User
-POST http://localhost:5000/api/v1/auth/register
-Content-Type: application/json
-
+### Update User Profile
+- **Endpoint**: `PUT /user/me`
+- **Body** (JSON):
+```json
 {
-  "first_name": "kartikey",
-  "last_name": "joshi",
-  "email": "tl@example.com",
-  "password": "password123",
-  "role": "tl"
+  "first_name": "micky",
+  "last_name": "jackson",
+  "email": "mokka@sample.com"
 }
+```
 
-### Login User
-POST http://localhost:5000/api/v1/auth/login
-Content-Type: application/json
+---
 
+## 🔐 Role Request
+
+### Create Role Request
+- **Endpoint**: `POST /roles/requests`
+- **Body** (JSON):
+```json
 {
-  "email": "tl@example.com",
-  "password": "password123"
+  "requested_role": "intern"
 }
+```
+
+### Get All Requests
+- **Endpoint**: `GET /roles/requests`
+- **Query Parameters**:
+  - `status=rejected`
+  - `requested_role=intern`
+  - `page=1`
+  - `limit=5`
+
+### Approve or Reject Request
+- **Endpoint**: `GET` *(endpoint not fully specified)*
+
+---
+
+## 📁 Projects
+
+### List Projects
+- **Endpoint**: `GET /projects`
+
+### Create Project
+- **Endpoint**: `POST /projects`
+- **Body** (JSON):
+```json
+{
+  "name": "Project Name",
+  "overview": "Project Overview",
+  "start_date": "2023-01-01",
+  "end_date": "2023-12-31",
+  "repo_link": "",
+  "environment_link": "",
+  "tech_stack": ["React", "Node.js"]
+}
+```
+
+### Get Project by ID
+- **Endpoint**: `GET /projects/:projectId`
+
+### Update Project by ID
+- **Endpoint**: `PUT /projects/:projectId`
+- **Body** (JSON):
+```json
+{
+  "name": "Project Name",
+  "overview": "Project Overview",
+  "start_date": "2023-01-01",
+  "end_date": "2023-12-31",
+  "repo_link": "",
+  "environment_link": "",
+  "tech_stack": ["React", "Node.js", "Express js"]
+}
+```
+
+### Delete Project by ID
+- **Endpoint**: `DELETE /projects/:projectId`
+
+### Get Project Timeline
+- **Endpoint**: `GET /projects/:projectId/timeline`
+
+---
+
+## ✅ Tasks
+
+### Create a Task
+- **Endpoint**: `POST /projects/:projectId/tasks`
+- **Body** (JSON):
+```json
+{
+  "assigned_to": "63f8b0e4c1a2d3b4f8c1a2d3",
+  "title": "Task 1",
+  "description": "Task 1 description",
+  "status": "in-progress",
+  "start_date": "2025-01-01",
+  "end_date": "2025-01-01",
+  "verified_by": "63f8b0e4c1a2d3b4f8c1a2d3"
+}
+```
+
+### Get All Tasks in Project
+- **Endpoint**: `GET /projects/:projectId/tasks`
+
+### Get Task by ID
+- **Endpoint**: `GET /tasks/:taskId` *(Body/URL not specified)*
+
+### Update Task by ID
+- **Endpoint**: `PUT /tasks/:taskId`
+- **Body** (JSON):
+```json
+{
+  "assigned_to": {
+    "_id": "680db21c5122c83715d5429a",
+    "email": "mokka@sample.com"
+  },
+  "title": "Task 4",
+  "description": "Task 1 description",
+  "status": "in-progress",
+  "start_date": "2024-12-31T18:30:00.000Z",
+  "end_date": "2024-12-31T18:30:00.000Z"
+}
+```
+
+---
+
+## 🛠 Notes
+- Ensure the backend server is running on `localhost:5000`.
+- Some GET endpoints for specific tasks/approvals lack full URL details.

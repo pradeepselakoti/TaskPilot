@@ -4,5 +4,5 @@ logs/
 *.log
 .DS_Store
 
-request.REST/
-
+# Specific REST client file
+request.REST
