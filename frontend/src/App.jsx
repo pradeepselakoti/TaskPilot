@@ -1,41 +1,18 @@
-<<<<<<< HEAD
 
-import TeamMembers from './components/TeamMembers';
-import AuthCard from './components/AuthCard';
 
-function App() {
-  return <TeamMembers />;
-  return <AuthCard />;
-=======
-import { BrowserRouter } from "react-router-dom";
-import AppRoutes from "./routes/AppRoutes";
-import Chatbot from "./Components/Chatbot";
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import AuthCard from './components/AuthCard';   // your login/signup page
+import TeamMembers from './components/TeamMembers'; // your team members page (you are working on this)
 
 function App() {
   return (
-    <>
-      <BrowserRouter>
-        <AppRoutes />
-      </BrowserRouter>
-
-     
-    </>
+    <Router>
+      <Routes>
+        <Route path="/" element={<AuthCard />} />
+        <Route path="/team" element={<TeamMembers />} />
+      </Routes>
+    </Router>
   );
->>>>>>> e3be2d5cd0c4f1319d171b06578c3ae28670baa6
 }
 
-
 export default App;
-// import AppRoutes from './components/AuthCard';
-// import AppRoutes from './components/TeamMembers'; // import your AppRoutes
-
-// function App() {
-//   return (
-//     <>
-//       <AppRoutes />
-//     </>
-//   );
-// }
-
-// export default App;
-
