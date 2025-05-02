@@ -1,5 +1,5 @@
 // pages/Team.jsx
-import TeamMember from '../components/TeamMember';
+import TeamMember from '../components/TeamMembers';
 import MemberDetails from '../components/MemberDetails';
 
 function Team() {
@@ -13,3 +13,6 @@ function Team() {
 }
 
 export default Team;
+
+
+
