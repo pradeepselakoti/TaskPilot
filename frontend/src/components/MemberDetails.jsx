@@ -1,8 +1,7 @@
-
-
 import React from "react";
 
 const MemberDetails = ({ member, onClose }) => {
+  console.log(member);
   return (
     <div
       className="fixed inset-0 flex justify-center items-center z-50 px-4 sm:px-6"
@@ -18,7 +17,9 @@ const MemberDetails = ({ member, onClose }) => {
         </button>
 
         {/* Header */}
-        <h2 className="text-xl font-semibold text-gray-800 mb-6">Member Details</h2>
+        <h2 className="text-xl font-semibold text-gray-800 mb-6">
+          Member Details
+        </h2>
 
         <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
           {/* Avatar */}
