@@ -8,12 +8,7 @@ const Sidebar = ({ isOpen, onClose }) => {
   const [active, setActive] = useState("overview");
 
   const menuItems = [
-    {
-      id: "overview",
-      label: "Project Overview",
-      path: "/project-overview",
-      icon: <FaThLarge />,
-    },
+    { id: "overview", label: "Project Overview", path: "/project-overview", icon: <FaThLarge /> },
     { id: "members", label: "Team Members", path: "/team", icon: <FaUsers /> },
     { id: "timeline", label: "Timeline", path: "/timeline", icon: <FaClock /> },
     { id: "chat", label: "Group Chat", path: "/chat", icon: <FaComments /> },
@@ -21,11 +16,12 @@ const Sidebar = ({ isOpen, onClose }) => {
 
   const handleMenuClick = (itemId) => {
     setActive(itemId);
-    onClose();
+    onClose(); 
   };
 
   return (
     <>
+     
       <div
         className={`fixed inset-0 bg-opacity-30 z-30 md:hidden transition-opacity ${
           isOpen ? "block" : "hidden"
@@ -38,23 +34,25 @@ const Sidebar = ({ isOpen, onClose }) => {
           isOpen ? "translate-x-0" : "-translate-x-full"
         } md:static md:flex md:flex-col`}
       >
-        <NavLink to={"/"} className="flex items-center gap-3 mb-6 -mt-2 ">
-          <img src={Logo} alt="Logo" className="w-15 h-auto  " />
-          <span className="text-3xl font-bold text-gray-800">Task Pilot</span>
+       
+       <div className="flex items-center justify-between mb-6 -mt-2">
+  <NavLink to={"/"} className="flex items-center gap-3">
+    <img src={Logo} alt="Logo" className="w-15 h-auto" />
+    <span className="text-xl font-bold text-gray-800">Task Pilot</span>
+  </NavLink>
+  <button onClick={onClose} className="md:hidden">
+    <IoMdClose size={24} />
+  </button>
+</div>
 
-          <div className="flex justify-end p-1 md:hidden">
-            <button onClick={onClose}>
-              <IoMdClose size={24} />
-            </button>
-          </div>
-        </NavLink>
 
+        
         <nav className="flex flex-col gap-3">
           {menuItems.map((item) => (
             <NavLink
               key={item.id}
-              to={item.path}
-              onClick={() => handleMenuClick(item.id)}
+              to={item.path}  
+              onClick={() => handleMenuClick(item.id)}  
               className={`flex items-center gap-3 px-4 py-2 rounded-full transition ${
                 active === item.id
                   ? " bg-[rgba(67,24,209,1)] text-white shadow-md"

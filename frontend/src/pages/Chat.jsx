@@ -1,12 +1,12 @@
-import React from 'react'
+import React from "react";
+import GroupChat from "../Components/GroupChat";
 
 const Chat = () => {
   return (
-   <>
-   <h1 className="bg-blue-300 text-5xl font-semibold text-center p-4">Chats</h1>
-   
-   </>
-  )
-}
+    <>
+      <GroupChat />
+    </>
+  );
+};
 
-export default Chat
+export default Chat;
