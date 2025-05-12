@@ -5,8 +5,9 @@ import ProjectLayout from "../layouts/ProjectLayout";
 
 import Loader from "../components/Loader";
 import Profile from "../pages/Profile";
-import Notification from "../Components/Notification";
+
 import AuthCard from "../components/AuthCard";
+import Notification from "../components/Notification";
 
 
 

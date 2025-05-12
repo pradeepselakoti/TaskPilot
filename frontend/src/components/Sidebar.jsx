@@ -35,17 +35,16 @@ const Sidebar = ({ isOpen, onClose }) => {
         } md:static md:flex md:flex-col`}
       >
        
-        <NavLink to={"/"} className="flex items-center gap-3 mb-6 -mt-2 ">
-          <img src={Logo} alt="Logo" className="w-15 h-auto  " />
-          <span className="text-xl font-bold text-gray-800">Task Pilot</span>
+       <div className="flex items-center justify-between mb-6 -mt-2">
+  <NavLink to={"/"} className="flex items-center gap-3">
+    <img src={Logo} alt="Logo" className="w-15 h-auto" />
+    <span className="text-xl font-bold text-gray-800">Task Pilot</span>
+  </NavLink>
+  <button onClick={onClose} className="md:hidden">
+    <IoMdClose size={24} />
+  </button>
+</div>
 
-          
-          <div className="flex justify-end p-1 md:hidden">
-            <button onClick={onClose}>
-              <IoMdClose size={24} />
-            </button>
-          </div>
-        </NavLink>
 
         
         <nav className="flex flex-col gap-3">
