@@ -2,15 +2,11 @@ import React, { lazy, Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
 import Layout from "../layouts/Layout";
 import ProjectLayout from "../layouts/ProjectLayout";
-
 import Loader from "../components/Loader";
 import Profile from "../pages/Profile";
-
 import AuthCard from "../components/AuthCard";
 import Notification from "../components/Notification";
-
-
-
+import ProjectOverview from "../pages/ProjectOverview";
 
 // Lazy Loading Pages
 const Dashboard = lazy(() => import('../pages/Dashboard'));
@@ -35,7 +31,7 @@ function AppRoutes() {
         {/* Project Layout */}
         <Route element={<ProjectLayout />}>
           <Route path="/project/:id" element={<ProjectDetails />} />
-          <Route path="/project-overview" element={<Team />} />
+          <Route path="/project-overview" element={<ProjectOverview/>} />
           <Route path="/team" element={<Team />} />
           <Route path="/timeline" element={<TimelinePage />} />
           <Route path="/chat" element={<Chat />} />
@@ -46,3 +42,11 @@ function AppRoutes() {
 }
 
 export default AppRoutes;
+
+
+
+
+
+
+
+
