@@ -6,7 +6,6 @@ function Team() {
   return (
     <div>
       <TeamMember />
-      {/* <MemberDetails /> */}
     </div>
   );
 }
