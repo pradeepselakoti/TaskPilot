@@ -5,7 +5,7 @@ import  checkRole from '../middlewares/role.js';
 const router = express.Router();
 
 // Create a new role request
-router.post('/', checkRole(["pending","intern"]), createRequest);
+router.post('/', checkRole(["pending","intern","tl","cos"]), createRequest);
 
 // Get list of role requests (admin only)
 router.get('/',checkRole("admin") , listRequests);
