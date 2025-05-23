@@ -1,8 +1,9 @@
-import { ProjectTeam } from '../models/ProjectTeam.js';
+import  ProjectTeam  from '../models/ProjectTeam.js';
 export const createProjectTeam = async (req, res) => {
   try {
-    const newTeam = new ProjectTeam(req.body);
+    const newTeam = new ProjectTeam({ project_id: req.params.id });
     const savedTeam = await newTeam.save();
+
     res.status(201).json({ success: true, data: savedTeam });
   } catch (error) {
     res.status(400).json({ success: false, error: error.message });
