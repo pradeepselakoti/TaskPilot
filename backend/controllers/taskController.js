@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 
 export const createTask = async (req, res) => {
   try {
+
     const  project_id  = req.params.id; 
     const assigned_by = req.user.id;
     const { 
@@ -42,15 +43,21 @@ export const listTasks = async (req, res) => {
   try {
     const { page = 1, limit = 10, ...filters } = req.query;
     const skip = (page - 1) * limit;
+    
+    // Add project_id filter from route parameters
+    const projectId = req.params.id;
+    
+    // Combine project_id with any other filters
+    const taskFilters = { ...filters, project_id: projectId };
 
-    const tasks = await Task.find(filters)
+    const tasks = await Task.find(taskFilters)
       .populate('project_id', 'name')
       .populate('assigned_by assigned_to verified_by', 'name email')
       .skip(skip)
       .limit(limit)
       .sort({ created_at: -1 });
 
-    const totalTasks = await Task.countDocuments(filters);
+    const totalTasks = await Task.countDocuments(taskFilters);
     
     return res.status(200).json({
       success: true,

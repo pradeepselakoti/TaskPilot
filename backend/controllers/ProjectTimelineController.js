@@ -25,17 +25,6 @@ export const getTimeline = async (req, res) => {
             success: true,
             data: timeline
         });
-        if (!timeline) {
-            return res.status(404).json({ 
-            success: false, 
-            error: 'Timeline not found for this project' 
-            });
-        }
-
-        return res.status(200).json({
-            success: true,
-            data: timeline
-        });
     } catch (error) {
         return res.status(500).json({
             success: false,

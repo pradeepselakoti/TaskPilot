@@ -3,8 +3,12 @@ import ProjectAssignment from '../models/ProjectAssignment.js';
 // CREATE a new project assignment
 export const createProjectAssignment = async (req, res) => {
   try {
-    const newAssignment = new ProjectAssignment(req.body);
-    const savedAssignment = await newAssignment.save();
+    const user_id = req.user.id;  // logged-in COS id
+
+    const newAssignment = new ProjectAssignment({
+      ...req.body,
+      cos_id: [user_id]  // force cos_id to be the logged-in user
+    });    const savedAssignment = await newAssignment.save();
     res.status(201).json({success:true,data:savedAssignment});
   } catch (error) {
     res.status(400).json({ success:false ,error: error.message });
@@ -45,7 +49,7 @@ export const getProjectAssignmentById = async (req, res) => {
 };
 
 // UPDATE a project assignment
-export const updateProjectAssignment = async (req, res) => {
+export const updateProjectAssignmentById = async (req, res) => {
   try {
     const updatedAssignment = await ProjectAssignment.findByIdAndUpdate(
       req.params.id,

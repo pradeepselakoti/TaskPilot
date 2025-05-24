@@ -30,29 +30,34 @@ export const createRequest = async (req, res) => {
 
 export const listRequests = async (req, res) => {
   try {
-    const user_id = req.user.id;
     const { status, requested_role, page = 1, limit = 10 } = req.query;
     const query = {};
-    
-    if (user_id && mongoose.Types.ObjectId.isValid(user_id)) query.user_id = user_id;
+
+    // 🛑 Do NOT filter by user_id if the user is Admin
+    if (req.user.role !== 'admin') {
+      if (req.user.id && mongoose.Types.ObjectId.isValid(req.user.id)) {
+        query.user_id = req.user.id;
+      }
+    }
+
     if (status && ['pending', 'approved', 'rejected'].includes(status)) query.status = status;
     if (requested_role) query.requested_role = requested_role;
-    
+
     const requests = await RoleRequest.find(query)
       .populate('user_id', 'first_name last_name email')
       .skip((page - 1) * limit)
       .limit(limit)
       .sort({ requested_at: -1 });
-    
+
     const totalRequests = await RoleRequest.countDocuments(query);
-    
+
     return res.status(200).json({
       success: true,
       count: requests.length,
       total: totalRequests,
       page,
       pages: Math.ceil(totalRequests / limit),
-      data: requests
+      data: requests,
     });
   } catch (error) {
     return res.status(500).json({ success: false, error: error.message });

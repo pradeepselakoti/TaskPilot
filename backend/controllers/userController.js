@@ -31,20 +31,37 @@ export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
 
+    // Find the user based on the email
     const user = await User.findOne({ email });
     if (!user) return res.status(404).json({ success: false, error: 'User not found' });
 
+    // Compare the password
     const isMatch = await user.comparePassword(password);
     if (!isMatch) return res.status(401).json({ success: false, error: 'Invalid password' });
 
-    const token = jwt.sign({id:user._id}, JWT_SECRET, { expiresIn: '1d' });
+    // Include the role in the payload
+    const token = jwt.sign(
+      { id: user._id, role: user.role },  // Include the role field
+      JWT_SECRET,
+      { expiresIn: '1d' }
+    );
+
+    // Send the token as a cookie
     res.cookie('token', token);
 
-    res.json({ success: true, data: { user, token } });
+    // Send the response
+    res.json({
+      success: true,
+      data: {
+        user,
+        token
+      }
+    });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
 };
+
 
 export const getUserProfile = async (req, res) => {
   try {

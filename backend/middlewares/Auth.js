@@ -16,7 +16,9 @@ const authMiddleware = async (req, res, next) => {
             return res.status(401).json({ message: 'User not found' });
         }
 
-        req.user = {id:user.id,role:user.role}; // Attach user to request object
+        req.user = { id: user._id, role: user.role }; // Attach both id and role
+        console.log('User Role:', req.user.role); // Log the user's role here
+
         next();
     } catch (err) {
         return res.status(401).json({ message: 'Invalid or expired token' });
