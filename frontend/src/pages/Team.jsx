@@ -1,18 +1,14 @@
 // pages/Team.jsx
-import TeamMember from '../Components/TeamMembers';
-import MemberDetails from '../Components/MemberDetails';
+
+import TeamMembers from "../components/TeamMembers";
+
 
 function Team() {
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Our Team</h1>
-      <TeamMember />
-      <MemberDetails />
+    <div>
+      <TeamMembers />
     </div>
   );
 }
 
 export default Team;
-
-
-

@@ -121,7 +121,7 @@ export default function ProjectsOverview() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 px-1 sm:px-10 pt-3 pb-10 ">
+    <div className=" bg-gray-50 px-1 sm:px-10 pt-3 pb-10 ">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-xl sm:text-2xl font-bold">Projects Overview</h1>
         <button
@@ -135,7 +135,6 @@ export default function ProjectsOverview() {
       {showModal && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 overflow-y-auto">
           <div className="bg-white rounded-xl p-6 w-full max-w-4xl relative shadow-xl max-h-screen overflow-y-auto">
-            
             <h2 className="text-md sm:text-lg font-semibold mb-6 text-center">
               Add New Project
             </h2>
@@ -254,13 +253,12 @@ export default function ProjectsOverview() {
 
             {/* Save Button */}
             <div className="flex justify-center space-x-4">
-            <button
-              onClick={() => setShowModal(false)}
-              className="mt-6 bg-red-500 text-white px-6 py-2 rounded hover:bg-red-600"
-              
-            >
-              Close
-            </button>
+              <button
+                onClick={() => setShowModal(false)}
+                className="mt-6 bg-red-500 text-white px-6 py-2 rounded hover:bg-red-600"
+              >
+                Close
+              </button>
               <button
                 onClick={handleSubmit}
                 className="mt-6 bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-700"
@@ -305,12 +303,12 @@ export default function ProjectsOverview() {
               <button className="text-xs sm:text-sm bg-indigo-600 text-white px-3 sm:px-4 py-2 rounded-lg">
                 Send Request
               </button>
-                <button
-                  className="text-indigo-600 text-xs sm:text-sm"
-                  onClick={() => navigate("/project-overview")}
-                >
-                  View Details
-                </button>
+              <button
+                className="text-indigo-600 text-xs sm:text-sm"
+                onClick={() => navigate("/project-overview")}
+              >
+                View Details
+              </button>
             </div>
           </div>
         ))}

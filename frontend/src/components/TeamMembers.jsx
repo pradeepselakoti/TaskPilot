@@ -37,7 +37,6 @@
 //   },
 // ];
 
-
 // const TeamMembers = () => {
 //   const [teamMembers, setTeamMembers] = useState(initialTeamMembers);
 //   const [selectedMember, setSelectedMember] = useState(null);
@@ -287,9 +286,9 @@ const TeamMembers = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] p-4 sm:p-6 lg:p-10">
+    <div className=" bg-[#f8fafc] p-3 sm:p-6 lg:p-5">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
-        <h2 className="text-2xl font-bold text-gray-800">Team Members</h2>
+        <h2 className="text-3xl font-bold text-gray-800">Team Members</h2>
         <button
           onClick={() => setShowAddModal(true)}
           className="bg-[#4318D1] hover:bg-[#3b10ba] text-white px-5 py-2 rounded-md shadow"
@@ -315,7 +314,9 @@ const TeamMembers = () => {
                   </h3>
                   <span
                     className={`w-3 h-3 rounded-full ${
-                      member.status === "online" ? "bg-green-500" : "bg-gray-400"
+                      member.status === "online"
+                        ? "bg-green-500"
+                        : "bg-gray-400"
                     }`}
                   ></span>
                 </div>
