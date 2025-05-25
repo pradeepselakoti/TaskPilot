@@ -14,10 +14,10 @@ export const getAllProjectTeams = async (req, res) => {
   try {
     const teams = await ProjectTeam.find()
       .populate('project_id', 'name description') 
-      .populate('cos_id', 'name email')            
-      .populate('tl_id', 'name email')              
-      .populate('intern_ids', 'name email')         
-      .populate('temp_roles.user_id', 'name email'); 
+      .populate('cos_id', 'name email temp_role')            
+      .populate('tl_id', 'name email temp_role')              
+      .populate('intern_ids', 'name email temp_role')         
+      .populate('temp_roles.user_id', 'name email temp_role'); 
 
     res.status(200).json({ success: true, data: teams });
   } catch (error) {
@@ -28,11 +28,10 @@ export const getAllProjectTeams = async (req, res) => {
 export const getProjectTeamById = async (req, res) => {
   try {
     const team = await ProjectTeam.findById(req.params.id)
-      .populate('project_id', 'name description')
-      .populate('cos_id', 'name email')
-      .populate('tl_id', 'name email')
-      .populate('intern_ids', 'name email')
-      .populate('temp_roles.user_id', 'name email');
+      .populate('cos_id', 'name email temp_role')
+      .populate('tl_id', 'name email temp_role')
+      .populate('intern_ids', 'name email temp_role')
+      .populate('temp_roles.user_id', 'name email temp_role');
 
     if (!team) {
       return res.status(404).json({ success: false, error: 'Project Team not found' });
@@ -54,11 +53,11 @@ export const updateProjectTeam = async (req, res) => {
       { new: true, runValidators: true }
     )
       .populate('project_id', 'name description')
-      .populate('cos_id', 'name email')
-      .populate('tl_id', 'name email')
-      .populate('intern_ids', 'name email')
-      .populate('temp_roles.user_id', 'name email');
-    
+      .populate('cos_id', 'name email temp_role')
+      .populate('tl_id', 'name email temp_role')
+      .populate('intern_ids', 'name email temp_role')
+      .populate('temp_roles.user_id', 'name email temp_role');
+
     if (!updatedTeam) {
       return res.status(404).json({
         success: false,

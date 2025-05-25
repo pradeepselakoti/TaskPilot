@@ -24,12 +24,6 @@ const projectTeamSchema = new mongoose.Schema({
       index: true
     }
   ],
-  temp_roles: [
-    {
-      user_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-      role: String
-    }
-  ],
   added_at: {
     type: Date,
     default: Date.now
