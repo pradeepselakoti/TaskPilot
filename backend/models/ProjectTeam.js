@@ -7,23 +7,16 @@ const projectTeamSchema = new mongoose.Schema({
     required: true,
     index: true
   },
-  cos_id: [{
+  member_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true
-  }],
-  tl_id: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
-  }],
-  intern_ids: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-      index: true
-    }
-  ],
+  },
+  member_role: {
+    type: String,
+    enum: ['intern', 'tl','cos'],
+    default: 'intern'
+  },
   added_at: {
     type: Date,
     default: Date.now

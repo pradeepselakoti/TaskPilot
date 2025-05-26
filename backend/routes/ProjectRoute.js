@@ -24,14 +24,13 @@ router.route('/:id/tasks')
   .post(checkRole('tl'), createTask)
   .get(checkRole(['intern','tl','cos','admin']), listTasks);
 
-router.route('/:project_id/team')
-  .post(checkRole('tl'), createProjectTeam);
+
+router.get('/team/all', checkRole('admin'), getAllProjectTeams);  
 
 router.route("/team/:id")
+  .post(checkRole(['tl','cos', 'admin']), createProjectTeam)
   .get(checkRole(['intern','tl','cos','admin']), getProjectTeamById)
   .put(checkRole(['tl','admin']), updateProjectTeam)
   .delete(checkRole('admin'), deleteProjectTeam);
-
-router.get('/teams', checkRole('admin'), getAllProjectTeams);
 
 export default router;
