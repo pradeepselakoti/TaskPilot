@@ -35,10 +35,10 @@ const projectSchema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
-  team: {
+  team: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: "ProjectTeam",
-  },
+  }],
   discarded: {
     type: Boolean,
     default: false,

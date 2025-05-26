@@ -36,6 +36,15 @@ export const createProjectTeam = async (req, res) => {
 
     const newTeam = new ProjectTeam({ project_id: req.params.id, member_id, member_role });
     const savedTeam = await newTeam.save();
+    if (!savedTeam) {
+      throw new Error('Failed to create project team');
+    }
+    await Project.findByIdAndUpdate(
+      req.params.id,
+      { $push: { team: savedTeam._id } },
+      { new: true }
+    );
+
     res.status(201).json({ success: true, data: savedTeam });
   } catch (error) {
     res.status(400).json({ success: false, error: error.message });

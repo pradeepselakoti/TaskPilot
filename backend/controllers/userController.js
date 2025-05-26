@@ -86,6 +86,8 @@ export const updateUser = async (req, res) => {
       }
     });
 
+    updateFields.profile_completed = true; 
+
     const user = await User.findByIdAndUpdate(
       req.user.id,
       updateFields,
