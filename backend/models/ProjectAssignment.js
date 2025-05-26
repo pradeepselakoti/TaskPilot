@@ -7,26 +7,15 @@ const projectAssignmentSchema = new mongoose.Schema({
     required: true,
     index: true 
   },
-  cos_id: [{
+  member_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true
-  }],
-  tl_ids: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-      index: true 
-    }
-  ],
-  intern_id: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
-  }],
-  accepted: {
-    type: Boolean,
-    default: false
+  },
+  status:{
+    type: String,
+    enum: ['rejected', 'pending', 'assigned'],
+    default: 'pending'
   },
   assigned_at: {
     type: Date,

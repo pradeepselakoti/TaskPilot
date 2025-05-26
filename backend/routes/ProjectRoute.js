@@ -1,7 +1,6 @@
 import express from 'express';
 import checkRole from '../middlewares/role.js';
 import { createProject, deleteProject, getProjectById, getProjects, updateProject } from '../controllers/ProjectController.js';
-import { createProjectAssignment, deleteProjectAssignment, getProjectAssignmentById, getAllProjectAssignments, updateProjectAssignmentById } from '../controllers/ProjectAssignmentController.js';
 import { getTimeline } from '../controllers/ProjectTimelineController.js';
 import { createTask, listTasks } from '../controllers/taskController.js';
 import { createProjectTeam, deleteProjectTeam, getAllProjectTeams, getProjectTeamById, updateProjectTeam } from '../controllers/ProjectTeamController.js';

@@ -1,83 +1,81 @@
 import ProjectAssignment from '../models/ProjectAssignment.js';
+import ProjectTeam from '../models/ProjectTeam.js';
 
-// CREATE a new project assignment
-export const createProjectAssignment = async (req, res) => {
+// Controller to create a new project assignment request
+export const ProjectAssignmentRequest = async (req, res) => {
   try {
-    const user_id = req.user.id;  // logged-in COS id
+    const { project_id } = req.body;
+    const member_id = req.user.id;
 
-    const newAssignment = new ProjectAssignment({
-      ...req.body,
-      cos_id: [user_id]  // force cos_id to be the logged-in user
-    });    const savedAssignment = await newAssignment.save();
-    res.status(201).json({success:true,data:savedAssignment});
+    // Check if assignment already exists
+    const existing = await ProjectAssignment.findOne({ project_id, member_id });
+    if (existing) {
+      return res.status(409).json({ success: false, error: 'Assignment already exists.' });
+    }
+
+    const assignment = new ProjectAssignment({
+      project_id,
+      member_id,
+    });
+
+    const savedAssignment = await assignment.save();
+    res.status(201).json({ success: true, data: savedAssignment });
   } catch (error) {
-    res.status(400).json({ success:false ,error: error.message });
+    res.status(500).json({ success: false, error: error.message });
   }
 };
 
-// GET all project assignments
-export const getAllProjectAssignments = async (req, res) => {
+// Controller to list all project assignments
+export const listAllProjectAssignment = async (req, res) => {
   try {
     const assignments = await ProjectAssignment.find()
       .populate('project_id')
-      .populate('cos_id')
-      .populate('tl_ids')
-      .populate('intern_id');
-    res.status(200).json({success:true,data:assignments});
+      .populate('member_id');
+    res.status(200).json({ success: true, data: assignments });
   } catch (error) {
-    res.status(500).json({ success:false,error: error.message });
+    res.status(500).json({ success: false, error: error.message });
   }
 };
 
-// GET a single project assignment by ID
-export const getProjectAssignmentById = async (req, res) => {
+// Controller to verify a project assignment (used as a verification point before adding to ProjectTeam)
+export const verifyProjectAssignment = async (req, res) => {
   try {
-    const assignment = await ProjectAssignment.findById(req.params.id)
-      .populate('project_id')
-      .populate('cos_id')
-      .populate('tl_ids')
-      .populate('intern_id');
+    const { project_id, member_id, status } = req.body;
+
+    // Validate input
+    if (!project_id || !member_id) {
+      return res.status(400).json({ success: false, error: 'Project ID and Member ID are required.' });
+    }
+
+    if (!status) {
+      return res.status(400).json({ success: false, error: 'Status is required.' });
+    }
+    const validStatuses = ['rejected', 'pending', 'assigned'];
+    if (!validStatuses.includes(status)) {
+      return res.status(400).json({ success: false, error: 'Invalid status provided.' });
+    }
+
+    const assignment = await ProjectAssignment.findOne({
+      project_id,
+      member_id,
+      status
+    });
 
     if (!assignment) {
-      return res.status(404).json({success:false, error: 'Project Assignment not found' });
+      return res.status(404).json({ success: false, error: 'Assignment not found or not assigned.' });
     }
 
-    res.status(200).json({success:true,data:assignment});
-  } catch (error) {
-    res.status(500).json({ success:false,error: error.message });
-  }
-};
+    const NewProjectTeam = new ProjectTeam({
+      project_id,
+      member_id,
+    });
 
-// UPDATE a project assignment
-export const updateProjectAssignmentById = async (req, res) => {
-  try {
-    const updatedAssignment = await ProjectAssignment.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true, runValidators: true }
-    );
-
-    if (!updatedAssignment) {
-      return res.status(404).json({ success:false,error: 'Project Assignment not found' });
+    if (assignment.status === 'assigned') {
+      await NewProjectTeam.save();
     }
 
-    res.status(200).json({success:true,data:updatedAssignment});
+    res.status(200).json({ success: true, data: { verified: true, assignment } });
   } catch (error) {
-    res.status(400).json({success:false, error: error.message });
-  }
-};
-
-// DELETE a project assignment
-export const deleteProjectAssignment = async (req, res) => {
-  try {
-    const deletedAssignment = await ProjectAssignment.findByIdAndDelete(req.params.id);
-
-    if (!deletedAssignment) {
-      return res.status(404).json({ success:false,error: 'Project Assignment not found' });
-    }
-
-    res.status(200).json({success:true, message: 'Project Assignment deleted successfully' });
-  } catch (error) {
-    res.status(500).json({success:false, error: error.message });
+    res.status(500).json({ success: false, error: error.message });
   }
 };
