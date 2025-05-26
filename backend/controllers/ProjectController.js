@@ -54,9 +54,13 @@ export const getProjects = async (req, res) => {
       ];
     }
 
-    const projects = await Project.find(filter)
-      .populate('created_by', 'username email') // Adjust fields as needed
-      .sort({ created_At: -1 });
+    const projects = await Project.find(filter, {
+      created_by: 1,
+      name: 1,
+      overview: 1,
+      tech_stack: 1
+    })
+    .populate('created_by', 'first_name last_name ') 
 
     res.status(200).json({
       success: true,
@@ -75,7 +79,7 @@ export const getProjects = async (req, res) => {
 export const getProjectById = async (req, res) => {
   try {
     const project = await Project.findById(req.params.id)
-      .populate('created_by', 'username email'); // Adjust fields as needed
+      .populate('created_by', 'first_name last_name email'); // Adjust fields as needed
 
     if (!project) {
       return res.status(404).json({
@@ -197,7 +201,7 @@ export const getProjectsByTechStack = async (req, res) => {
     const projects = await Project.find({
       tech_stack: { $in: [tech] },
       discarded: false
-    }).populate('created_by', 'username email');
+    }).populate('created_by', 'first_name last_name email');
 
     res.status(200).json({
       success: true,
