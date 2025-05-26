@@ -118,11 +118,11 @@ export const deleteProjectTeam = async (req, res) => {
 
 //get project team size
 
-export const getProjectTeamSize = async (req, res) => {
+export const getProjectTeamSize = async (project_id) => {
   try {
-    const teamSize = await ProjectTeam.countDocuments({ project_id: req.params.project_id });
-    res.status(200).json({ success: true, data: { teamSize } });
+    const teamSize = await ProjectTeam.countDocuments({ project_id });
+    return teamSize ? teamSize  : 0;
   } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+    return { success: false, error: error.message };
   }
 }

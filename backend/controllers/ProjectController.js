@@ -1,5 +1,6 @@
 import { Project } from "../models/Project.js";
 import mongoose from "mongoose";
+import { getProjectTeamSize } from "./ProjectTeamController.js";
 
 // Create a new project
 export const createProject = async (req, res) => {
@@ -40,7 +41,7 @@ export const getProjects = async (req, res) => {
     const filter = {};
 
     if (created_by) {
-      filter.created_by = new mongoose.Types.ObjectId(created_by);
+      filter.created_by = mongoose.Types.ObjectId.createFromHexString(created_by);
     }
     
     if (discarded !== undefined) {
@@ -60,7 +61,13 @@ export const getProjects = async (req, res) => {
       overview: 1,
       tech_stack: 1
     })
-    .populate('created_by', 'first_name last_name ') 
+    .populate('created_by', 'first_name last_name ')
+    .lean(); // Get plain JS objects
+
+    // Await if getProjectTeamSize is async, otherwise remove await
+    for (const project of projects) {
+      project.member_count = await getProjectTeamSize(project._id);
+    }
 
     res.status(200).json({
       success: true,
