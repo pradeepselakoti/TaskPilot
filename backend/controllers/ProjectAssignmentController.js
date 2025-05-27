@@ -28,9 +28,12 @@ export const ProjectAssignmentRequest = async (req, res) => {
 // Controller to list all project assignments
 export const listAllProjectAssignment = async (req, res) => {
   try {
-    const assignments = await ProjectAssignment.find()
-      .populate('project_id')
-      .populate('member_id');
+    const query = {};
+
+    if(req.body.project_id){
+      query.project_id = req.body.project_id;
+    }
+    const assignments = await ProjectAssignment.find(query);
     res.status(200).json({ success: true, data: assignments });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
@@ -55,23 +58,37 @@ export const verifyProjectAssignment = async (req, res) => {
       return res.status(400).json({ success: false, error: 'Invalid status provided.' });
     }
 
-    const assignment = await ProjectAssignment.findOne({
+    let assignment = await ProjectAssignment.findOne({
       project_id,
-      member_id,
-      status
+      member_id
     });
 
     if (!assignment) {
       return res.status(404).json({ success: false, error: 'Assignment not found or not assigned.' });
     }
 
-    const NewProjectTeam = new ProjectTeam({
-      project_id,
-      member_id,
-    });
-
-    if (assignment.status === 'assigned') {
-      await NewProjectTeam.save();
+    switch (status) {
+      case 'assigned':
+      // Add to ProjectTeam and update assignment status
+      const newProjectTeam = new ProjectTeam({
+        project_id,
+        member_id
+      });
+      await newProjectTeam.save();
+      assignment = await ProjectAssignment.updateOne(
+        { _id: assignment._id },
+        { status: 'assigned' },
+        { new: true }
+      );
+      break;
+      case 'rejected':
+      // Update assignment status to rejected
+      assignment = await ProjectAssignment.updateOne(
+        { _id: assignment._id },
+        { status: 'rejected' },
+        { new: true }
+      );
+      break;
     }
 
     res.status(200).json({ success: true, data: { verified: true, assignment } });

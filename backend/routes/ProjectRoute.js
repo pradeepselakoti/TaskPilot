@@ -4,6 +4,7 @@ import { createProject, deleteProject, getProjectById, getProjects, updateProjec
 import { getTimeline } from '../controllers/ProjectTimelineController.js';
 import { createTask, listTasks } from '../controllers/taskController.js';
 import { createProjectTeam, deleteProjectTeam, getAllProjectTeams, getProjectTeamById, updateProjectTeam } from '../controllers/ProjectTeamController.js';
+import { listAllProjectAssignment, ProjectAssignmentRequest, verifyProjectAssignment } from '../controllers/ProjectAssignmentController.js';
 
 const router = express.Router();
 
@@ -32,4 +33,9 @@ router.route("/team/:id")
   .put(checkRole(['tl','admin']), updateProjectTeam)
   .delete(checkRole('admin'), deleteProjectTeam);
 
+
+router.post('/assign/request', checkRole(['intern','tl','cos',"admin"]), ProjectAssignmentRequest);
+router.get('/assign/all', checkRole(['intern','tl','cos','admin']), listAllProjectAssignment);
+router.put('/assign/verify', checkRole(['tl','cos','admin']), verifyProjectAssignment);
+  
 export default router;
