@@ -26,7 +26,7 @@ const AuthCard = () => {
 
   const LoginHandler = async () => {
     try {
-      const res = await axios.post('http://localhost:5000/api/v1/auth/login', {
+      const res = await axios.post(import.meta.env.VITE_BACKEND_URL +'/api/v1/auth/login', {
         email: loginEmail,
         password: loginPassword,
       },{withCredentials: true});
@@ -46,7 +46,7 @@ const AuthCard = () => {
       return;
     }
     try {
-      const res = await axios.post('http://localhost:5000/api/v1/auth/register', {
+      const res = await axios.post(import.meta.env.VITE_BACKEND_URL+'/api/v1/auth/register', {
         first_name: signupFirstName,
         last_name: signupLastName,
         email: signupEmail,
