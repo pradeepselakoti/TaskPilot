@@ -1,25 +1,48 @@
 import { Project } from "../models/Project.js";
 import mongoose from "mongoose";
 import { getProjectTeamSize } from "./ProjectTeamController.js";
+import ProjectAssignment from '../models/ProjectAssignment.js';
+
 
 // Create a new project
 export const createProject = async (req, res) => {
   try {
     const created_by = req.user.id;
-    const {name,overview,start_date,end_date,repo_link,environment_link,tech_stack } = req.body; // {name:"Project Name", overview: "Project Overview", start_date: "2023-01-01", end_date: "2023-12-31", repo_link: "", environment_link: "", tech_stack: ["React", "Node.js"]}
-    
-    const project = new Project({
+    const {
       name,
-      overview, 
+      overview,
       start_date,
       end_date,
       repo_link,
       environment_link,
       tech_stack,
+      team_lead,
+      members,
+      status
+    } = req.body;
+
+    const project = new Project({
+      name,
+      overview,
+      start_date,
+      end_date,
+      repo_link,
+      environment_link,
+      tech_stack,
+      team_lead,
+      members,
+      status,
       created_by: new mongoose.Types.ObjectId(created_by)
     });
 
     await project.save();
+
+    await ProjectAssignment.create({
+      member_id: created_by,
+      project_id: project._id,
+      status: 'assigned'
+    });
+
     res.status(201).json({
       success: true,
       message: "Project created successfully",
@@ -37,34 +60,37 @@ export const createProject = async (req, res) => {
 // Get all projects (with optional filtering)
 export const getProjects = async (req, res) => {
   try {
-    const { created_by, discarded, search } = req.query;
-    const filter = {};
+    const userRole = req.user.role;
+    const userId = req.user.id;
 
-    if (created_by) {
-      filter.created_by = mongoose.Types.ObjectId.createFromHexString(created_by);
+    let projects = [];
+
+    if (['admin', 'cos', 'tl'].includes(userRole)) {
+      projects = await Project.find({ discarded: false }, {
+        created_by: 1,
+        name: 1,
+        overview: 1,
+        tech_stack: 1
+      }).populate('created_by', 'first_name last_name').lean();
+    } else {
+      const assignments = await ProjectAssignment.find({
+        member_id: userId,
+        status: 'assigned'
+      }).select('project_id');
+
+      const assignedProjectIds = assignments.map(a => a.project_id);
+
+      projects = await Project.find({
+        _id: { $in: assignedProjectIds },
+        discarded: false
+      }, {
+        created_by: 1,
+        name: 1,
+        overview: 1,
+        tech_stack: 1
+      }).populate('created_by', 'first_name last_name').lean();
     }
-    
-    if (discarded !== undefined) {
-      filter.discarded = discarded === 'true';
-    }
 
-    if (search) {
-      filter.$or = [
-        { name: { $regex: search, $options: 'i' } },
-        { overview: { $regex: search, $options: 'i' } }
-      ];
-    }
-
-    const projects = await Project.find(filter, {
-      created_by: 1,
-      name: 1,
-      overview: 1,
-      tech_stack: 1
-    })
-    .populate('created_by', 'first_name last_name ')
-    .lean(); // Get plain JS objects
-
-    // Await if getProjectTeamSize is async, otherwise remove await
     for (const project of projects) {
       project.member_count = await getProjectTeamSize(project._id);
     }
@@ -86,7 +112,7 @@ export const getProjects = async (req, res) => {
 export const getProjectById = async (req, res) => {
   try {
     const project = await Project.findById(req.params.id)
-      .populate('created_by', 'first_name last_name email'); // Adjust fields as needed
+      .populate('created_by', 'first_name last_name email');
 
     if (!project) {
       return res.status(404).json({
@@ -95,10 +121,21 @@ export const getProjectById = async (req, res) => {
       });
     }
 
-    res.status(200).json({
-      success: true,
-      data: project
-    });
+    // 👇 Fetch team size details
+const teamSizeDetails = await getProjectTeamSize(project._id);
+
+res.status(200).json({
+  success: true,
+  data: {
+    ...project.toObject(),
+    cosMember: teamSizeDetails.cos || null,  // name instead of count
+    frontendTeamSize: teamSizeDetails.frontend || 0,
+    backendTeamSize: teamSizeDetails.backend || 0,
+    totalMembers: teamSizeDetails.total || 0
+  }
+});
+
+
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -110,18 +147,34 @@ export const getProjectById = async (req, res) => {
 
 // Update a project
 export const updateProject = async (req, res) => {
-  const {name,overview,start_date,end_date,repo_link,environment_link,tech_stack } = req.body;
+  const {
+    name,
+    overview,
+    start_date,
+    end_date,
+    repo_link,
+    environment_link,
+    tech_stack,
+    team_lead,
+    members,
+    status
+  } = req.body;
 
   try {
     const project = await Project.findByIdAndUpdate(
       req.params.id,
-      {name,
-      overview,
-      start_date,
-      end_date,
-      repo_link,
-      environment_link,
-      tech_stack},
+      {
+        name,
+        overview,
+        start_date,
+        end_date,
+        repo_link,
+        environment_link,
+        tech_stack,
+        team_lead,
+        members,
+        status
+      },
       { new: true, runValidators: true }
     );
 
@@ -222,3 +275,27 @@ export const getProjectsByTechStack = async (req, res) => {
     });
   }
 };
+
+// Get projects by a specific userId
+export const getProjectsByUser = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const projects = await Project.find({
+      created_by: new mongoose.Types.ObjectId(userId),
+      discarded: false
+    }).populate('created_by', 'first_name last_name email');
+
+    res.status(200).json({
+      success: true,
+      data: projects
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch user's projects",
+      error: error.message
+    });
+  }
+};
+

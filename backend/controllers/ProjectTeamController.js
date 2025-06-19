@@ -1,44 +1,49 @@
 import { Project } from '../models/Project.js';
 import ProjectTeam from '../models/ProjectTeam.js';
 import user from '../models/user.js';
+import ProjectAssignment from '../models/ProjectAssignment.js';
 
 // Create a new project team
 export const createProjectTeam = async (req, res) => {
   try {
-    const { member_id } = req.body;
+    const { member_id, member_role } = req.body;
 
-    if (!member_id) {
-      return res.status(400).json({ success: false, message: 'Member ID is required' });
+    if (!member_id || !member_role) {
+      return res.status(400).json({ success: false, message: 'Member ID and Role are required' });
     }
 
-    // Check if the project exists
     const existingProject = await Project.findById(req.params.id);
     if (!existingProject) {
       return res.status(404).json({ success: false, message: 'Project not found' });
     }
 
-    // Check if the member already exists in the project team
     const existingMember = await ProjectTeam.findOne({ project_id: req.params.id, member_id });
     if (existingMember) {
       return res.status(400).json({ success: false, message: 'Member already exists in the project team' });
     }
 
-    const member_role =await user.findById(member_id).then(user => {
-      if (!user) {
-        throw new Error('User not found');
-      }
+    const newTeam = new ProjectTeam({
+      project_id: req.params.id,
+      member_id,
+      member_role
+    });
 
-      if (user.role === 'pending' ) {
-        throw new Error('User cannot be added to the project team');
-      }
-      return user.role; 
-    })
-
-    const newTeam = new ProjectTeam({ project_id: req.params.id, member_id, member_role });
     const savedTeam = await newTeam.save();
-    if (!savedTeam) {
-      throw new Error('Failed to create project team');
-    }
+if (!savedTeam) throw new Error('Failed to create project team');
+// After saving newTeam
+const assignmentExists = await ProjectAssignment.findOne({
+  project_id: req.params.id,
+  member_id,
+});
+if (!assignmentExists) {
+  await ProjectAssignment.create({
+    project_id: req.params.id,
+    member_id,
+    status: 'assigned',
+    assigned_at: new Date(),
+  });
+}
+
     await Project.findByIdAndUpdate(
       req.params.id,
       { $push: { team: savedTeam._id } },
@@ -50,6 +55,7 @@ export const createProjectTeam = async (req, res) => {
     res.status(400).json({ success: false, error: error.message });
   }
 };
+
 
 // Get all project teams
 export const getAllProjectTeams = async (req, res) => {
@@ -68,7 +74,9 @@ export const getProjectTeamById = async (req, res) => {
   try {
     const team = await ProjectTeam.find({project_id:req.params.id})
       .populate('project_id', 'name overview')
-      .populate('member_id', 'first_name last_name role');
+      .populate('member_id', 'first_name last_name  email contact github_id skills destination profile_pic')
+      
+      
     if (!team) {
       return res.status(404).json({ success: false, error: 'Project Team not found' });
     }
@@ -129,9 +137,38 @@ export const deleteProjectTeam = async (req, res) => {
 
 export const getProjectTeamSize = async (project_id) => {
   try {
-    const teamSize = await ProjectTeam.countDocuments({ project_id });
-    return teamSize ? teamSize  : 0;
+    const members = await ProjectTeam.find({ project_id }).populate('member_id', 'first_name last_name role');
+
+    let teamStats = {
+      cos: null, // Will hold full name
+      frontend: 0,
+      backend: 0,
+      tl: 0,
+      intern: 0,
+      total: members.length
+    };
+
+    members.forEach((member) => {
+      const role = member.member_role || member.member_id?.role;
+      const fullName = `${member.member_id?.first_name || ''} ${member.member_id?.last_name || ''}`.trim();
+
+      if (role === 'cos' && !teamStats.cos) teamStats.cos = fullName;
+      else if (role === 'frontend') teamStats.frontend += 1;
+      else if (role === 'backend') teamStats.backend += 1;
+      else if (role === 'tl') teamStats.tl += 1;
+      else if (role === 'intern') teamStats.intern += 1;
+    });
+
+    return teamStats;
   } catch (error) {
-    return { success: false, error: error.message };
+    return {
+      cos: null,
+      frontend: 0,
+      backend: 0,
+      tl: 0,
+      intern: 0,
+      total: 0
+    };
   }
-}
+};
+

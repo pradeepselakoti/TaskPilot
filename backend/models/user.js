@@ -11,7 +11,11 @@ const userSchema = new mongoose.Schema({
   github_id: { type: String },
   department: { type: String },
   location: { type: String },
-  tech_stack: [{ type: String }],
+
+  // ✅ Added these two:
+  contact: { type: String },
+  skills: [{ type: String }],
+
   destination: { type: String },
   temp_role: { type: String },
   role: {
@@ -25,6 +29,7 @@ const userSchema = new mongoose.Schema({
   role_assigned_by: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   role_assigned_at: { type: Date }
 });
+
 
 // 🔐 Auto-hash password before saving (only if modified)
 userSchema.pre('save', async function (next) {

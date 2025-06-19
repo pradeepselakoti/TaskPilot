@@ -1,5 +1,7 @@
+
 import User from '../models/user.js';
 import jwt from 'jsonwebtoken';
+
 
 const JWT_SECRET = 'odayuwEs3wTS/UI+y2hJOg==';
 
@@ -78,7 +80,7 @@ export const updateUser = async (req, res) => {
   try {
     const updateFields = {};
     const possibleFields = ['first_name', 'last_name', 'email', 'profile_pic', 'phone', 
-      'timezone', 'github_id', 'department', 'location', 'tech_stack', 'destination', 'temp_role'];
+      'timezone', 'github_id', 'department', 'location', 'tech_stack', 'destination', 'temp_role', 'skills',  'contact', ];
 
     possibleFields.forEach(field => {
       if (req.body[field] !== undefined) {
@@ -101,3 +103,18 @@ export const updateUser = async (req, res) => {
     res.status(500).json({ success: false, error: err.message });
   }
 };
+
+export const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find().select('first_name last_name email role'); // customize fields
+    res.status(200).json({ success: true, data: users });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+export const logoutUser = (req, res) => {
+  res.clearCookie('token');  
+  res.json({ success: true, message: 'Logged out successfully' });
+};
+

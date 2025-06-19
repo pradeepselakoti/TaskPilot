@@ -14,7 +14,16 @@ const projectTeamSchema = new mongoose.Schema({
   },
   member_role: {
     type: String,
-    enum: ['intern', 'tl','cos'],
+    enum: [
+      'intern',
+      'tl',
+      'cos',
+      'Frontend Developer',
+      'Backend Developer',
+      'UI/UX Designer',
+      'QA Engineer',
+      'Full Stack Developer'
+    ],
     default: 'intern'
   },
   added_at: {

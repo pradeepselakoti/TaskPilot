@@ -35,10 +35,19 @@ const projectSchema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
-  team: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "ProjectTeam",
-  }],
+  status: {
+      type: String,
+      enum: ["Planning", "In Progress", "Completed"],
+      default: "Planning",
+    },
+    team_lead: {
+      type: String,
+      required: true,
+    },
+    members: {
+      type: Number,
+      default: 1,
+    },
   discarded: {
     type: Boolean,
     default: false,
@@ -47,6 +56,7 @@ const projectSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+ 
 });
 
 // Exporting the model

@@ -33,6 +33,7 @@ export const createTask = async (req, res) => {
     });
 
     const savedTask = await newTask.save();
+    await savedTask.populate('assigned_to assigned_by verified_by', 'first_name last_name email');
     return res.status(201).json({ success: true, data: savedTask });
   } catch (error) {
     return res.status(500).json({ success: false, error: error.message });
@@ -52,7 +53,7 @@ export const listTasks = async (req, res) => {
 
     const tasks = await Task.find(taskFilters)
       .populate('project_id', 'name')
-      .populate('assigned_by assigned_to verified_by', 'name email')
+      .populate('assigned_by assigned_to verified_by', 'first_name last_name email')
       .skip(skip)
       .limit(limit)
       .sort({ created_at: -1 });
@@ -76,7 +77,7 @@ export const getTaskById = async (req, res) => {
   try {
     const task = await Task.findById(req.params.id)
       .populate('project_id', 'name')
-      .populate('assigned_by assigned_to verified_by', 'name email');
+      .populate('assigned_by assigned_to verified_by', 'first_name last_name email');
 
     if (!task) {
       return res.status(404).json({ success: false, message: 'Task not found' });
@@ -104,7 +105,7 @@ export const updateTask = async (req, res) => {
       query,
       { new: true, runValidators: true }
     ).populate('project_id', 'name')
-     .populate('assigned_by assigned_to verified_by', 'name email');
+     .populate('assigned_by assigned_to verified_by', 'first_name last_name email');
 
     if (!updatedTask) {
       return res.status(404).json({ success: false, message: 'Task not found' });
