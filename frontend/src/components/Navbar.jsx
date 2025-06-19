@@ -1,5 +1,9 @@
 /* eslint-disable no-unused-vars */
 import { useState, useEffect, useRef } from "react";
+import axios from 'axios';
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+
 import {
   FaBars,
   FaBell,
@@ -20,6 +24,8 @@ const Navbar = ({ onMenuClick }) => {
   const location = useLocation();
   const generalPages = ["/login", "/", "/profile", "/notification"];
   const isGeneralPage = generalPages.includes(location.pathname);
+
+ 
 
   // Handle window resize
   useEffect(() => {
@@ -43,7 +49,23 @@ const Navbar = ({ onMenuClick }) => {
   const shouldShowLogo = isGeneralPage || (!isGeneralPage && isMobile);
   const shouldShowHamburger = !isGeneralPage && isMobile;
 
+  const navigate = useNavigate();
+
+const handleLogout = async () => {
+  try {
+    await axios.post("/api/v1/auth/logout"); // ← backend API call
+    navigate("/login"); // ← user ko login page pe bhej do
+  } catch (error) {
+    console.error("Logout failed", error);
+  }
+};
+
+const { user } = useAuth();
+
+
+
   return (
+    
     <nav className="w-full h-16 bg-white shadow-md px-4 ml-1 flex items-center justify-between relative">
       <div className="flex items-center gap-4">
         {shouldShowHamburger && (
@@ -86,15 +108,17 @@ const Navbar = ({ onMenuClick }) => {
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
           >
             <img
-              src={profilePic}
-              alt="Profile"
-              className="w-8 h-8 rounded-full object-cover"
-            />
+            src={user?.profileImage || profilePic}  
+            alt="Profile"
+            className="w-8 h-8 rounded-full object-cover"
+          />
             <div className="hidden sm:block text-left">
-              <p className="text-sm font-semibold text-gray-800">
-                Robert Allen
-              </p>
-              <p className="text-xs text-gray-500">HR Manager</p>
+             <p className="text-sm font-semibold text-gray-800">
+              {user ? `${user.first_name} ${user.last_name}` : "Guest User"}
+            </p>
+            <p className="text-xs text-gray-500">
+              {user ? user.role : "No Role"}
+            </p>
             </div>
             <FaChevronDown size={14} className="text-gray-600" />
           </div>
@@ -121,6 +145,7 @@ const Navbar = ({ onMenuClick }) => {
                   className="flex items-center gap-2 px-4 py-2 rounded-4xl bg-red-100 hover:bg-red-200 text-red-500 transition-colors duration-200 cursor-pointer"
                   onClick={() => {
                     setIsDropdownOpen(false);
+                    handleLogout();
                   }}
                 >
                   <NavLink

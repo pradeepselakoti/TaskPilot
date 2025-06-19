@@ -1,18 +1,20 @@
-import { useContext, useState } from "react";
+import { useContext  ,useState} from "react";
 import RoleContext from "../context/RoleContext";
 import TimelineGraph from "../components/TimelineGraph";
 import TaskList from "../components/TaskList";
 
 export default function TimelinePage() {
-  const { role } = useContext(RoleContext);
+  const { role, loading } = useContext(RoleContext);
   const [showTimeline, setShowTimeline] = useState(true);
   const [tasks, setTasks] = useState([]);
+
+  if (loading) return <div className="p-4">Loading...</div>;
+  // console.log("Role in TimelinePage:", role);
 
   return (
     <div className="space-y-4 px-2 sm:px-4 lg:px-8">
       {role === "admin" ? (
         <>
-          {/* Header and Toggle Button for Admin */}
           <div className="flex items-center justify-between flex-wrap gap-2 sm:gap-4">
             <h2 className="text-base sm:text-3xl font-bold text-gray-800 whitespace-nowrap">
               Task Timeline
@@ -25,7 +27,6 @@ export default function TimelinePage() {
             </button>
           </div>
 
-          {/* Timeline or TaskList */}
           <div className="w-full overflow-x-auto">
             <div className="w-full max-w-full">
               {showTimeline ? (
@@ -37,7 +38,6 @@ export default function TimelinePage() {
           </div>
         </>
       ) : (
-        // Intern and other roles see TaskList directly
         <TaskList tasks={tasks} setTasks={setTasks} role={role} />
       )}
     </div>

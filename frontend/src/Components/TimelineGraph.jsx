@@ -1,29 +1,65 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import api from "../api"; 
 
-const tasks = [
-  { name: "Sarah Anderson", role: "Lead Designer", task: "UI Design System", color: "bg-green-600", start: 0, duration: 2 },
-  { name: "Michael Chen", role: "Frontend Developer", task: "Homepage Development", color: "bg-green-600", start: 1, duration: 3 },
-  { name: "Emily Rodriguez", role: "Backend Developer", task: "API Integration", color: "bg-blue-600", start: 2, duration: 2 },
-  { name: "David Kim", role: "Product Manager", task: "Sprint Planning", color: "bg-blue-600", start: 0, duration: 2 },
-  { name: "Lisa Wang", role: "QA Engineer", task: "Testing Phase 1", color: "bg-green-600", start: 3, duration: 1 },
-  { name: "John Doe", role: "DevOps Engineer", task: "CI/CD Setup", color: "bg-blue-600", start: 2, duration: 2 },
-];
-
-const monthLabels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-const weekLabels = ["Week 1", "Week 2", "Week 3", "Week 4", "Week 5"];
+import { useParams } from 'react-router-dom';
 
 export default function TimelineGraph() {
+  const { id: projectId } = useParams(); // assuming your route is something like /project/:id/timeline
   const scrollRef = useRef(null);
   const headerRef = useRef(null);
   const [view, setView] = useState("Month");
+  const [tasks, setTasks] = useState([]);
+
+  const monthLabels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const weekLabels = ["Week 1", "Week 2", "Week 3", "Week 4", "Week 5"];
+  const labels = view === "Month" ? monthLabels : weekLabels;
+  const colWidth = view === "Month" ? 6 : 5;
+  const boxWidthClass = view === "Month" ? "w-32 sm:w-24" : "w-24 sm:w-20";
 
   const handleScroll = () => {
     headerRef.current.scrollLeft = scrollRef.current.scrollLeft;
   };
 
-  const labels = view === "Month" ? monthLabels : weekLabels;
-  const colWidth = view === "Month" ? 8 : 5; // in rem for both views
-  const boxWidthClass = view === "Month" ? "w-32 sm:w-24" : "w-24 sm:w-20";
+  useEffect(() => {
+    const fetchTimeline = async () => {
+      try {
+        const response = await api.get(`/projects/${projectId}/timeline`);
+        if (response.data.success) {
+          const mappedTasks = response.data.data.map(task => {
+  const startDate = new Date(task.start_date);
+  const endDate = new Date(task.end_date);
+
+  let start, duration;
+
+  if (view === "Month") {
+    start = startDate.getMonth(); // 0 to 11
+    duration = Math.max(1, (endDate.getMonth() - startDate.getMonth()) + 1);
+  } else {
+    // Week calculation capped between 0 to 4 (Week 1 to Week 5)
+    start = Math.min(4, Math.floor((startDate.getDate() - 1) / 7)); // 0-based index
+    const endWeek = Math.min(4, Math.floor((endDate.getDate() - 1) / 7));
+    duration = Math.max(1, endWeek - start + 1);
+  }
+
+  return {
+    name: task.member_name,
+    role: task.member_role,
+    task: task.status,
+    color: task.status === "completed" ? "bg-green-600" : "bg-blue-600",
+    start,
+    duration
+  };
+});
+
+          setTasks(mappedTasks);
+        }
+      } catch (err) {
+        console.error("Failed to fetch timeline:", err);
+      }
+    };
+
+    fetchTimeline();
+  }, [projectId, view]);
 
   return (
     <div className="px-0 sm:px-4 py-2">
@@ -63,7 +99,6 @@ export default function TimelineGraph() {
           ref={scrollRef}
           onScroll={handleScroll}
         >
-          {/* Header */}
           <div
             className={`flex border-b border-gray-300 bg-white sticky top-0 z-10 min-w-fit ${
               view === "Month" ? "w-max" : "w-full"

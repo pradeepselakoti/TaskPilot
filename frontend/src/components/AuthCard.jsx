@@ -1,10 +1,16 @@
+/* eslint-disable no-unused-vars */
 import axios from 'axios';
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import {useNavigate} from 'react-router-dom'
+import api from '../api'; 
+import { useAuth } from "../context/AuthContext";
+
 
 const AuthCard = () => {
+  const { setUser } = useAuth();
+
   const [isFlipped, setIsFlipped] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -25,43 +31,44 @@ const AuthCard = () => {
   const navigate = useNavigate();
 
   const LoginHandler = async () => {
-    try {
-      const res = await axios.post(import.meta.env.VITE_BACKEND_URL +'/api/v1/auth/login', {
-        email: loginEmail,
-        password: loginPassword,
-      },{withCredentials: true});
-      
-      navigate("/")
+  try {
+    const res = await api.post('/auth/login', {
+      email: loginEmail,
+      password: loginPassword,
+    });
+   console.log('Login response:', res.data);
+     setUser(res.data.data.user); 
+    navigate("/");
+    console.log('Login success:', res.data);
+  } catch (err) {
+    console.error('Login error:', err.response?.data || err.message);
+  }
+};
 
-      console.log('Login success:', res.data);
-    } catch (err) {
-      // handle error
-      console.error('Login error:', err.response?.data || err.message);
-    }
-  };
 
   const SignupHandler = async () => {
-    if (signupPassword !== signupConfirmPassword) {
-      alert('Passwords do not match!');
-      return;
-    }
-    try {
-      const res = await axios.post(import.meta.env.VITE_BACKEND_URL+'/api/v1/auth/register', {
-        first_name: signupFirstName,
-        last_name: signupLastName,
-        email: signupEmail,
-        password: signupPassword,
-      },{withCredentials: true});
-      
-      navigate("/")
 
-      console.log('Signup success:', res.data);
-      setIsFlipped(false);
-    } catch (err) {
-      // handle error
-      console.error('Signup error:', err.response?.data || err.message);
-    }
-  };
+    
+  if (signupPassword !== signupConfirmPassword) {
+    alert('Passwords do not match!');
+    return;
+  }
+  try {
+    const res = await api.post('/auth/register', {
+      first_name: signupFirstName,
+      last_name: signupLastName,
+      email: signupEmail,
+      password: signupPassword,
+    });
+    setUser(res.data.data); 
+    navigate("/");
+    console.log('Signup success:', res.data);
+    setIsFlipped(false);
+  } catch (err) {
+    console.error('Signup error:', err.response?.data || err.message);
+  }
+};
+
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-white">

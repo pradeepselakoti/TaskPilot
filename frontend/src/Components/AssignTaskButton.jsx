@@ -1,48 +1,69 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import api from "../api";
+import { useAuth } from "../context/AuthContext";
+
 
 const months = [
   "Jan", "Feb", "Mar", "Apr", "May", "Jun",
   "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
 ];
 
-const roles = [
-  "Frontend Developer",
-  "Backend Developer",
-  "Lead Designer",
-  "Product Manager",
-  "QA Engineer",
-  "DevOps Engineer"
-];
+const monthMap = {
+  Jan: "01", Feb: "02", Mar: "03", Apr: "04", May: "05", Jun: "06",
+  Jul: "07", Aug: "08", Sep: "09", Oct: "10", Nov: "11", Dec: "12"
+};
 
 export default function AssignTaskButton({ onAssign }) {
   const [showModal, setShowModal] = useState(false);
+  const [users, setUsers] = useState([]);
   const [form, setForm] = useState({
     title: "",
     startMonth: "Jan",
     endMonth: "Jan",
-    role: "Frontend Developer"
+    assignedUser: ""
   });
+
+  const { user } = useAuth();
+ 
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const res = await api.get("/user"); // Backend should return all users
+        setUsers(res.data.data);
+        if (res.data.data.length > 0) {
+          setForm((prev) => ({ ...prev, assignedUser: res.data.data[0]._id }));
+        }
+      } catch (err) {
+        console.error("Error fetching users:", err);
+      }
+    };
+    fetchUsers();
+  }, []);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   const assign = () => {
+    const start = `2025-${monthMap[form.startMonth]}-01`;
+    const end = `2025-${monthMap[form.endMonth]}-28`;
+
     const task = {
       title: form.title || "Untitled Task",
-      startMonth: form.startMonth,
-      endMonth: form.endMonth,
-      role: form.role,
-      name: "Auto User",
-      color: "bg-indigo-600",
+      status: "in-progress",
+      start_date: new Date(start),
+      end_date: new Date(end),
+      assigned_to: form.assignedUser,
+      verified_by: user?._id || null,
     };
+
     onAssign(task);
     setShowModal(false);
     setForm({
       title: "",
       startMonth: "Jan",
       endMonth: "Jan",
-      role: "Frontend Developer"
+      assignedUser: users.length > 0 ? users[0]._id : "",
     });
   };
 
@@ -104,15 +125,17 @@ export default function AssignTaskButton({ onAssign }) {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Role</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Assign to User</label>
                 <select
-                  name="role"
-                  value={form.role}
+                  name="assignedUser"
+                  value={form.assignedUser}
                   onChange={handleChange}
                   className="w-full px-3 py-2 border rounded"
                 >
-                  {roles.map((role) => (
-                    <option key={role}>{role}</option>
+                  {users.map((u) => (
+                    <option key={u._id} value={u._id}>
+                      {u.first_name} {u.last_name}
+                    </option>
                   ))}
                 </select>
               </div>

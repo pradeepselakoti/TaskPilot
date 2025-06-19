@@ -1,7 +1,15 @@
 import React, { useState } from "react";
+import axios from "axios";
+import { useAuth } from "../context/AuthContext";
+
 
 const EditProfileForm = ({ onClose, profileData, setProfileData }) => {
-  const [formData, setFormData] = useState(profileData);
+  
+  const { setUser } = useAuth();
+  const [formData, setFormData] = useState({
+  ...profileData,
+  skills: profileData.skills || [],
+});
   const [newSkill, setNewSkill] = useState("");
 
   const handleChange = (e) => {
@@ -26,11 +34,24 @@ const EditProfileForm = ({ onClose, profileData, setProfileData }) => {
     });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setProfileData(formData); // Update global state
-    onClose(); // Close modal
-  };
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    // Backend API call kar ke profile update karo
+    await axios.put("http://localhost:5000/api/v1/user/me", formData, { withCredentials: true });
+    
+    // Agar successful, toh frontend state update karo
+    setProfileData(formData);
+    setUser(formData);  
+    
+    
+    // Modal band karo
+    onClose();
+  } catch (error) {
+    console.error("Profile update failed:", error);
+    // Yahan error handling kar sakte hain agar chahe
+  }
+};
 
   return (
     <div className="fixed inset-0 bg-black/60  bg-opacity-40 flex items-center justify-center z-50">
@@ -46,8 +67,8 @@ const EditProfileForm = ({ onClose, profileData, setProfileData }) => {
               </label>
               <input
                 type="text"
-                name="firstName"
-                value={formData.firstName}
+                name="first_name"
+                value={formData.first_name}
                 onChange={handleChange}
                 className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-500"
               />
@@ -58,8 +79,8 @@ const EditProfileForm = ({ onClose, profileData, setProfileData }) => {
               </label>
               <input
                 type="text"
-                name="lastName"
-                value={formData.lastName}
+                name="last_name"
+                value={formData.last_name}
                 onChange={handleChange}
                 className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-500"
               />
@@ -96,7 +117,7 @@ const EditProfileForm = ({ onClose, profileData, setProfileData }) => {
 
           {/* Role + Location */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
+            {/* <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Designation
               </label>
@@ -120,7 +141,7 @@ const EditProfileForm = ({ onClose, profileData, setProfileData }) => {
                 <option value="CTO">CTO</option>
                 <option value="CEO">CEO</option>
               </select>
-            </div>
+            </div> */}
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">

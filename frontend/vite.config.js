@@ -9,7 +9,14 @@ export default defineConfig({
     hmr: {
       host: "localhost",
       port: 5173,
-      protocol: "ws", // or "wss" if you're using HTTPS
+      protocol: "ws",
+    },
+    proxy: {
+      '/api': {
+        target: 'http://localhost:5000', // ✅ Your backend server
+        changeOrigin: true,
+        secure: false,
+      },
     },
   },
 });

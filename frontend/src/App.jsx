@@ -1,11 +1,17 @@
 import { BrowserRouter } from "react-router-dom";
 import AppRoutes from "./routes/AppRoutes";
 import Chatbot from "./components/Chatbot";
+import { AuthProvider } from "./context/AuthContext";
+import { RoleProvider } from "./context/RoleContext"; 
 
 function App() {
   return (
     <BrowserRouter>
-      <AppRoutes />
+      <AuthProvider>
+        <RoleProvider> 
+          <AppRoutes />
+        </RoleProvider>
+      </AuthProvider>
     </BrowserRouter>
   );
 }

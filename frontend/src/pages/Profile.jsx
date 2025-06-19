@@ -1,28 +1,42 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
+
 import ProfileCard from "../Components/ProfileCard";
 import ProfileInfoCard from "../Components/ProfileInfoCard";
-import RecentActivityCard from "../Components/RecentActivityCard";
-import NotificationSettingsCard from "../Components/NotificationSettingsCard";
+// import RecentActivityCard from "../Components/RecentActivityCard";
+// import NotificationSettingsCard from "../Components/NotificationSettingsCard";
 import EditProfileForm from "../Components/EditProfileForm";
 
 function Profile() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [profileData, setProfileData] = useState({
-    name: "Thakur Sanjeet Singh",
-    email: "sanjeeet@example.com",
-    contact: "+91 9876543210",
-    role: "Frontend Developer",
-    location: "India",
-    projects: 12,
-    teams: 4,
-    tasks: 28,
-    skills: ["React", "Tailwind", "JavaScript"],
-    profileImage: "/sanjupod.jpg", // Add this if you have images
-  });
+  const [profileData, setProfileData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const res = await axios.get("/api/v1/auth/profile", {
+          withCredentials: true,
+        });
+        setProfileData(res.data.data);
+      } catch (error) {
+        console.error("Profile fetch failed:", error);
+        setProfileData(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, []);
+
+  if (loading) return <p className="p-4 text-center">Loading profile...</p>;
+  if (!profileData)
+    return <p className="p-4 text-center text-red-500">No profile data found.</p>;
 
   return (
-    <div className="min-h-screen  ">
-      <div className="max-w-6xl mx-auto">
+    <div className="min-h-screen">
+      <div className="max-w-6xl mx-auto px-4">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold">My Profile</h1>
           <button
@@ -35,25 +49,26 @@ function Profile() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <ProfileCard
-            firstName={profileData.firstName}
-            lastName={profileData.lastName}
-            projects={profileData.projects}
-            teams={profileData.teams}
-            tasks={profileData.tasks}
-            profileImage={profileData.profileImage}
+            firstName={profileData.first_name}
+            lastName={profileData.last_name}
+            projects={profileData.projects || 0}
+            teams={profileData.teams || 0}
+            tasks={profileData.tasks || 0}
+            profileImage={profileData.profileImage || "/defaultProfilePic.png"}
           />
           <ProfileInfoCard
+            firstName={profileData.first_name}
+            lastName={profileData.last_name}
             email={profileData.email}
-            contact={profileData.contact}
+            contact={profileData.contact || "N/A"}
             role={profileData.role}
-            location={profileData.location}
-            skills={profileData.skills}
+            location={profileData.location || "N/A"}
+            skills={profileData.skills || []}
           />
-          <RecentActivityCard />
-          <NotificationSettingsCard />
+          {/* <RecentActivityCard /> */}
+          {/* <NotificationSettingsCard /> */}
         </div>
 
-        {/* Modal */}
         {isModalOpen && (
           <EditProfileForm
             onClose={() => setIsModalOpen(false)}

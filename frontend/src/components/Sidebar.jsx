@@ -1,17 +1,19 @@
 import React, { useState } from "react";
 import { FaThLarge, FaUsers, FaClock, FaComments } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
-import { NavLink } from "react-router-dom";
+import { NavLink , useParams } from "react-router-dom";
 import Logo from "../assets/Logo.png";
 
 const Sidebar = ({ isOpen, onClose }) => {
   const [active, setActive] = useState("overview");
+  const { id: projectId } = useParams();  // /project/:id from route
+
 
   const menuItems = [
-    { id: "overview", label: "Project Overview", path: "/project-overview", icon: <FaThLarge /> },
-    { id: "members", label: "Team Members", path: "/team", icon: <FaUsers /> },
-    { id: "timeline", label: "Timeline", path: "/timeline", icon: <FaClock /> },
-    { id: "chat", label: "Group Chat", path: "/chat", icon: <FaComments /> },
+    { id: "overview", label: "Project Overview", path: `/project/${projectId}/overview`, icon: <FaThLarge /> },
+    { id: "members", label: "Team Members", path: `/project/${projectId}/team`, icon: <FaUsers /> },
+    { id: "timeline", label: "Timeline", path: `/project/${projectId}/timeline`, icon: <FaClock /> },
+    { id: "chat", label: "Group Chat", path: `/project/${projectId}/chat`, icon: <FaComments /> },
   ];
 
   const handleMenuClick = (itemId) => {

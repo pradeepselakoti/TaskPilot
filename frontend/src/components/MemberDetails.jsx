@@ -30,7 +30,7 @@ const MemberDetails = ({ member, onClose }) => {
           {/* Details */}
           <div className="flex-1 w-full">
             <h3 className="text-lg font-bold text-gray-800 mb-4 text-center sm:text-left">
-              {member.name}
+              {member.first_name} {member.last_name}
             </h3>
 
             {/* Grid info */}
@@ -41,15 +41,15 @@ const MemberDetails = ({ member, onClose }) => {
               </div>
               <div>
                 <p className="font-medium text-gray-900">Phone</p>
-                <p className="text-[#4318D1]">{member.phone}</p>
+                <p className="text-[#4318D1]">{member.contact}</p>
               </div>
               <div>
                 <p className="font-medium text-gray-900">Project Role</p>
-                <p>{member.role}</p>
+                <p>{member.member_role}</p>
               </div>
               <div>
                 <p className="font-medium text-gray-900">GitHub ID</p>
-                <p>{member.github}</p>
+                <p>{member.github_id}</p>
               </div>
               <div>
                 <p className="font-medium text-gray-900">Total Projects</p>
