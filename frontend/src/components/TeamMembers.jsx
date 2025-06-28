@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import MemberDetails from "./MemberDetails";
 import { useParams } from "react-router-dom";
 import api from "../api"; 
-
+import { FaTrash } from "react-icons/fa";
 const TeamMembers = () => {
   const { id: projectId } = useParams(); 
   const [teamMembers, setTeamMembers] = useState([]);
@@ -55,7 +55,20 @@ const TeamMembers = () => {
     } catch (err) {
       console.error("Error adding member:", err.response?.data || err.message);
     }
+
+ 
   };
+     const handleDeleteMember = async (memberId) => {
+  try {
+    await api.delete(`/projects/team/${projectId}`, {
+      data: { member_id: memberId }
+    });
+    setTeamMembers(teamMembers.filter(team => team.member_id._id !== memberId));
+  } catch (err) {
+    console.error("Error deleting member:", err.response?.data || err.message);
+  }
+};
+  
 
   return (
     <div className="bg-[#f8fafc] p-3 sm:p-6 lg:p-5">
@@ -93,6 +106,13 @@ const TeamMembers = () => {
                           : "bg-gray-400"
                       }`}
                     ></span>
+                       <button
+                            className="ml-2 text-red-500 hover:text-red-700"
+                            title="Remove from team"
+                            onClick={() => handleDeleteMember(member._id)}
+                          >
+                            <FaTrash />
+                          </button>
                   </div>
                   <p className="text-sm text-gray-500">{team.member_role}</p>
                 </div>

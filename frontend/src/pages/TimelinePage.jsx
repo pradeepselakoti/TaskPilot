@@ -1,7 +1,7 @@
 import { useContext  ,useState} from "react";
 import RoleContext from "../context/RoleContext";
-import TimelineGraph from "../components/TimelineGraph";
-import TaskList from "../components/TaskList";
+import TimelineGraph from "../Components/TimelineGraph";
+import TaskList from "../Components/TaskList";
 
 export default function TimelinePage() {
   const { role, loading } = useContext(RoleContext);

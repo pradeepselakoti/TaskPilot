@@ -1,6 +1,6 @@
 import { BrowserRouter } from "react-router-dom";
 import AppRoutes from "./routes/AppRoutes";
-import Chatbot from "./components/Chatbot";
+import Chatbot from "./Components/Chatbot";
 import { AuthProvider } from "./context/AuthContext";
 import { RoleProvider } from "./context/RoleContext"; 
 

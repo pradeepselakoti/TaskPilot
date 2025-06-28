@@ -5,9 +5,9 @@ import ProjectLayout from "../layouts/ProjectLayout";
 import Loader from "../components/Loader";
 import Profile from "../pages/Profile";
 import AuthCard from "../components/AuthCard";
-import Notification from "../components/Notification";
+import Notification from "../Components/Notification";
 import ProjectOverview from "../pages/ProjectOverview";
-import ProtectedRoute from "../components/ProtectedRoute";
+import ProtectedRoute from "../Components/ProtectedRoute";
 
 const Dashboard = lazy(() => import('../pages/Dashboard'));
 const Team = lazy(() => import('../pages/Team'));

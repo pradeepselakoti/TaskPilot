@@ -11,7 +11,7 @@ export const RoleProvider = ({ children }) => {
     const fetchRole = async () => {
       try {
         const res = await api.get("/user/me"); 
-        //  console.log("User data from backend in RoleContext:", res.data);
+        console.log("User data from backend in RoleContext:", res.data)
         setRole(res.data.data.role); // e.g., 'admin', 'intern', etc.
       } catch (err) {
         console.error("Error fetching role from backend:", err);

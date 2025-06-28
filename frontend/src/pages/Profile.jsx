@@ -3,8 +3,8 @@ import axios from "axios";
 
 import ProfileCard from "../Components/ProfileCard";
 import ProfileInfoCard from "../Components/ProfileInfoCard";
-// import RecentActivityCard from "../Components/RecentActivityCard";
-// import NotificationSettingsCard from "../Components/NotificationSettingsCard";
+import RecentActivityCard from "../Components/RecentActivityCard";
+import NotificationSettingsCard from "../Components/NotificationSettingsCard";
 import EditProfileForm from "../Components/EditProfileForm";
 
 function Profile() {
@@ -65,8 +65,8 @@ function Profile() {
             location={profileData.location || "N/A"}
             skills={profileData.skills || []}
           />
-          {/* <RecentActivityCard /> */}
-          {/* <NotificationSettingsCard /> */}
+          <RecentActivityCard /> 
+          <NotificationSettingsCard /> 
         </div>
 
         {isModalOpen && (
